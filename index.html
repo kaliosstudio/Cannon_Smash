@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Cannon Smash: Block Tower 3D – Fire your cannon, smash colorful blocks, crash towers! Free physics puzzle game. Download now.">
+  <title>Cannon Smash: Block Tower 3D – Official Website</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+  <style>
+
+/* ─────────────────────────────────────────
+   RESET & TOKENS
+───────────────────────────────────────── */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Nunito',sans-serif;background:#fff;color:#1a1a2e;overflow-x:hidden}
+img{display:block;max-width:100%}
+a{text-decoration:none;color:inherit}
+
+/* ─────────────────────────────────────────
+   NAVBAR
+───────────────────────────────────────── */
+.navbar{
+  position:fixed;top:0;left:0;right:0;z-index:9999;
+  background:rgba(255,255,255,0.97);
+  box-shadow:0 2px 12px rgba(0,0,0,.10);
+  backdrop-filter:blur(10px);
+}
+.navbar-inner{
+  max-width:1280px;margin:0 auto;
+  padding:0 28px;height:68px;
+  display:flex;align-items:center;gap:16px;
+}
+.nav-brand{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.nav-brand img{width:48px;height:48px;border-radius:12px;object-fit:cover;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+.nav-brand-text{font-family:'Lilita One',cursive;font-size:.95rem;line-height:1.15;color:#0d1b3e;text-transform:uppercase}
+.nav-brand-text em{color:#e53935;font-style:normal;display:block}
+
+.nav-links{display:flex;gap:4px;flex:1;justify-content:center}
+.nav-link{
+  font-weight:800;font-size:.88rem;color:#4a4a6a;
+  padding:7px 14px;border-radius:100px;
+  transition:background .18s,color .18s;
+}
+.nav-link:hover,.nav-link.active{background:rgba(245,166,35,.18);color:#0d1b3e}
+
+.nav-playnow{
+  background:linear-gradient(135deg,#F5A623,#FFD600);
+  color:#0d1b3e;font-family:'Lilita One',cursive;font-size:.95rem;
+  padding:10px 24px;border-radius:100px;
+  box-shadow:0 4px 14px rgba(245,166,35,.45);
+  transition:transform .18s,box-shadow .18s;flex-shrink:0;
+}
+.nav-playnow:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(245,166,35,.6)}
+
+/* ─────────────────────────────────────────
+   HERO
+───────────────────────────────────────── */
+.hero{
+  position:relative;
+  min-height:100vh;
+  padding-top:68px;
+  overflow:hidden;
+  display:flex;align-items:center;
+  position:relative;
+  background:#0e4da4;
+}
+
+/* Blurred background image */
+.hero::before{
+  content:'';
+  position:absolute;inset:0;z-index:0;
+  background:url('assets/hero_scene.jpg') center/cover no-repeat;
+  filter:blur(8px);
+  transform:scale(1.08); /* prevents blur edge bleed */
+}
+/* Dark overlay for readability */
+.hero::after{
+  content:'';
+  position:absolute;inset:0;z-index:1;
+  background:linear-gradient(
+    135deg,
+    rgba(8,30,80,.72) 0%,
+    rgba(10,40,100,.55) 40%,
+    rgba(5,20,60,.38) 100%
+  );
+}
+
+/* no animated clouds needed — real ones in bg image */
+.hero-clouds{display:none}
+
+/* wave at bottom */
+.hero-wave{
+  position:absolute;bottom:0;left:0;right:0;z-index:1;line-height:0;
+}
+.hero-wave svg{display:block;width:100%;height:80px}
+
+.hero-container{
+  position:relative;z-index:2;
+  max-width:860px;margin:0 auto;
+  padding:80px 48px 120px;
+  display:flex;flex-direction:column;align-items:center;
+  text-align:center;
+  width:100%;
+}
+
+/* LEFT COPY */
+.hero-copy{}
+
+.hero-tag{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.5);
+  color:#fff;font-weight:800;font-size:.8rem;letter-spacing:1px;
+  padding:5px 16px;border-radius:100px;margin-bottom:18px;
+  backdrop-filter:blur(6px);
+}
+
+.hero-h1{
+  font-family:'Lilita One',cursive;
+  line-height:1;margin-bottom:20px;
+}
+.h1-line1{
+  display:block;font-size:clamp(2rem,4vw,3rem);
+  color:#fff;text-shadow:2px 3px 0 rgba(0,0,0,.35);letter-spacing:1px;
+}
+.h1-line2{
+  display:block;font-size:clamp(4rem,8vw,7rem);
+  color:#FFD600;
+  text-shadow:5px 5px 0 #b71c1c,8px 8px 0 rgba(0,0,0,.25);
+  line-height:.92;letter-spacing:2px;
+}
+.h1-line3{
+  display:inline-block;margin-top:10px;
+  font-size:clamp(1.2rem,2.5vw,2rem);
+  color:#fff;background:#E53935;
+  padding:5px 18px 7px;border-radius:8px;
+  text-shadow:2px 2px 0 rgba(0,0,0,.3);
+  box-shadow:4px 4px 0 rgba(0,0,0,.22);letter-spacing:1px;
+}
+
+.hero-desc{
+  font-size:1.05rem;color:rgba(255,255,255,.9);line-height:1.7;
+  margin-bottom:30px;max-width:560px;
+  text-shadow:1px 1px 4px rgba(0,0,0,.3);
+}
+
+/* Store badge row */
+.store-row{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:32px;justify-content:center}
+.store-badge{
+  display:block;height:50px;width:auto;
+  filter:drop-shadow(0 4px 10px rgba(0,0,0,.35));
+  transition:transform .2s;
+}
+.store-badge:hover{transform:translateY(-3px)}
+
+/* Stats */
+.hero-stats{display:flex;align-items:center;gap:20px}
+.stat{text-align:center}
+.stat-n{display:block;font-family:'Lilita One',cursive;font-size:1.6rem;color:#FFD600;text-shadow:2px 2px 0 rgba(0,0,0,.3)}
+.stat-l{display:block;font-size:.72rem;color:rgba(255,255,255,.8);text-transform:uppercase;letter-spacing:.5px;font-weight:700}
+.stat-divider{width:1px;height:40px;background:rgba(255,255,255,.3)}
+
+/* RIGHT IMAGE */
+.hero-art{
+  position:relative;display:flex;justify-content:center;align-items:center;
+}
+.hero-art-glow{
+  position:absolute;width:80%;height:80%;
+  background:radial-gradient(circle,rgba(255,214,0,.5) 0%,transparent 70%);
+  filter:blur(50px);z-index:0;
+  animation:artGlow 4s ease-in-out infinite alternate;
+}
+@keyframes artGlow{from{opacity:.4;transform:scale(.85)}to{opacity:.9;transform:scale(1.1)}}
+.hero-art-img{
+  position:relative;z-index:1;
+  width:100%;max-width:560px;
+  border-radius:24px;
+  box-shadow:0 24px 64px rgba(0,0,0,.5),0 0 0 3px rgba(255,255,255,.15);
+  animation:artFloat 5s ease-in-out infinite;
+}
+@keyframes artFloat{0%,100%{transform:translateY(0) rotate(-.5deg)}50%{transform:translateY(-18px) rotate(.5deg)}}
+
+/* RESPONSIVE HERO */
+@media(max-width:960px){
+  .hero-container{grid-template-columns:1fr;text-align:center;padding:40px 28px 80px}
+  .hero-desc{max-width:100%}
+  .store-row{justify-content:center}
+  .hero-stats{justify-content:center}
+  .h1-line3{display:block;text-align:center}
+  .hero-art{order:-1}
+  .hero-art-img{max-width:380px}
+}
+
+/* ─────────────────────────────────────────
+   TICKER / MARQUEE
+───────────────────────────────────────── */
+.ticker{
+  position:relative;overflow:hidden;
+  background:linear-gradient(180deg,#6D3A1F 0%,#8B5E3C 30%,#A0742A 50%,#8B5E3C 70%,#5C3611 100%);
+  border-top:4px solid #C8942A;border-bottom:4px solid #C8942A;
+  padding:14px 0;
+}
+.ticker::before,.ticker::after{
+  content:'';position:absolute;top:0;bottom:0;width:100px;z-index:2;pointer-events:none;
+}
+.ticker::before{left:0;background:linear-gradient(90deg,#6D3A1F,transparent)}
+.ticker::after {right:0;background:linear-gradient(-90deg,#6D3A1F,transparent)}
+
+.ticker-track{
+  display:flex;white-space:nowrap;
+  animation:tickerScroll 24s linear infinite;
+}
+.ticker-item{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:0 32px;
+  font-family:'Lilita One',cursive;font-size:.9rem;color:#FFD600;letter-spacing:.5px;
+  border-right:2px solid rgba(255,214,0,.2);
+}
+.ticker-item img{width:20px;height:20px;border-radius:4px;object-fit:cover}
+@keyframes tickerScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ─────────────────────────────────────────
+   SECTION COMMONS
+───────────────────────────────────────── */
+.sec-label{
+  display:inline-block;
+  background:rgba(245,166,35,.12);border:2px solid #F5A623;
+  color:#c67400;font-weight:900;font-size:.72rem;letter-spacing:2.5px;
+  padding:4px 16px;border-radius:100px;margin-bottom:14px;
+}
+.sec-title{
+  font-family:'Lilita One',cursive;
+  font-size:clamp(2rem,4vw,2.8rem);
+  color:#0d1b3e;text-align:center;margin-bottom:10px;
+}
+.sec-title .hl{color:#F5A623}
+.sec-sub{
+  text-align:center;color:#5a5a7a;font-size:.98rem;
+  max-width:520px;margin:0 auto 50px;line-height:1.65;
+}
+.container{max-width:1200px;margin:0 auto;padding:0 36px}
+
+/* ─────────────────────────────────────────
+   FEATURES
+───────────────────────────────────────── */
+.features{
+  background:linear-gradient(180deg,#e8f6ff 0%,#dff0ff 100%);
+  padding:90px 0;
+  text-align:center;
+}
+
+.feat-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:24px;
+  margin-bottom:36px;
+}
+@media(max-width:900px){.feat-grid{grid-template-columns:1fr}}
+
+.feat-card{
+  background:#fff;border-radius:24px;overflow:hidden;
+  box-shadow:0 8px 28px rgba(0,0,0,.13);
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1),box-shadow .3s;
+  text-align:left;
+}
+.feat-card:hover{transform:translateY(-8px);box-shadow:0 16px 44px rgba(0,0,0,.2)}
+
+.feat-card-img{
+  position:relative;height:280px;overflow:hidden;
+}
+.feat-card-img img{
+  width:100%;height:100%;
+  object-fit:cover;object-position:top center;
+  transition:transform .5s;
+}
+.feat-card:hover .feat-card-img img{transform:scale(1.06)}
+.feat-card-badge{
+  position:absolute;bottom:0;left:0;right:0;
+  background:linear-gradient(0deg,rgba(0,0,0,.7) 0%,transparent 100%);
+  color:#fff;font-weight:900;font-size:.85rem;
+  padding:32px 16px 14px;display:flex;align-items:center;gap:8px;
+}
+
+.feat-card-body{padding:18px 20px 22px}
+.feat-card-body p{color:#5a5a7a;font-size:.9rem;line-height:1.6}
+
+/* ─────────────────────────────────────────
+   MINI PILLS
+───────────────────────────────────────── */
+.pills-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:16px;
+}
+@media(max-width:900px){.pills-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.pills-grid{grid-template-columns:1fr}}
+
+.pill{
+  background:#fff;border-radius:18px;
+  padding:20px 18px;
+  box-shadow:0 4px 16px rgba(0,0,0,.09);
+  border:2px solid rgba(0,0,0,.04);
+  display:flex;align-items:flex-start;gap:14px;
+  transition:transform .28s,box-shadow .28s,border-color .28s;
+  text-align:left;
+}
+.pill:hover{transform:translateY(-5px);box-shadow:0 10px 28px rgba(0,0,0,.15);border-color:#F5A623}
+.pill-icon{font-size:2rem;flex-shrink:0;line-height:1;margin-top:2px}
+.pill strong{display:block;font-size:.95rem;color:#0d1b3e;margin-bottom:4px}
+.pill p{font-size:.82rem;color:#6a6a8a;line-height:1.45}
+
+/* ─────────────────────────────────────────
+   SCREENSHOTS
+───────────────────────────────────────── */
+.screenshots{
+  background:linear-gradient(180deg,#dff0ff 0%,#b8deff 100%);
+  padding:90px 0 70px;text-align:center;
+}
+
+.ss-outer{
+  position:relative;
+  display:flex;align-items:center;gap:12px;
+  margin-bottom:24px;
+}
+.ss-viewport{overflow:hidden;flex:1;border-radius:20px}
+.ss-track{
+  display:flex;gap:16px;
+  transition:transform .48s cubic-bezier(.25,.46,.45,.94);
+  will-change:transform;
+}
+.ss-slide{
+  flex:0 0 195px;
+  border-radius:22px;overflow:hidden;
+  box-shadow:0 8px 24px rgba(0,0,0,.22);
+  border:3px solid rgba(255,255,255,.8);
+  transition:transform .3s,border-color .3s;
+}
+.ss-slide:hover{transform:scale(1.04) translateY(-6px);border-color:#FFD600}
+.ss-slide img{width:100%;display:block}
+
+.ss-arrow{
+  flex-shrink:0;width:50px;height:50px;border-radius:50%;
+  border:3px solid rgba(255,255,255,.9);background:rgba(255,255,255,.75);
+  color:#0d1b3e;font-size:1.8rem;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.15);
+  transition:all .22s;backdrop-filter:blur(6px);
+}
+.ss-arrow:hover{background:#FFD600;border-color:#F5A623;transform:scale(1.12);color:#0d1b3e}
+
+.ss-dots{display:flex;justify-content:center;gap:8px}
+.ss-dot{
+  width:10px;height:10px;border-radius:50%;
+  background:rgba(13,27,62,.2);border:none;cursor:pointer;
+  transition:background .2s,width .25s,border-radius .25s;
+}
+.ss-dot.active{background:#0d1b3e;width:28px;border-radius:5px}
+
+/* ─────────────────────────────────────────
+   DOWNLOAD CTA
+───────────────────────────────────────── */
+.download{
+  position:relative;overflow:hidden;padding:0;
+}
+/* Wooden background */
+.dl-bg{
+  position:absolute;inset:0;
+  background:
+    repeating-linear-gradient(
+      180deg,
+      rgba(0,0,0,.06) 0px, rgba(0,0,0,.06) 2px,
+      transparent 2px, transparent 60px
+    ),
+    linear-gradient(135deg,#7B4A1E 0%,#9C6632 25%,#B8853E 40%,#9C6632 60%,#6B3A14 80%,#8B5A2B 100%);
+  z-index:0;
+}
+.dl-bg::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 55% 50%,rgba(255,214,0,.15) 0%,transparent 65%);
+  z-index:1;
+}
+/* golden border strips */
+.dl-border-top,.dl-border-bot{
+  position:absolute;left:0;right:0;height:6px;z-index:2;
+  background:linear-gradient(90deg,#8B5A2B,#D4AA5A,#F5D27A,#D4AA5A,#8B5A2B);
+}
+.dl-border-top{top:0}.dl-border-bot{bottom:0}
+
+.dl-inner{
+  position:relative;z-index:3;
+  max-width:1100px;margin:0 auto;padding:60px 48px;
+  display:grid;grid-template-columns:280px 1fr 200px;
+  align-items:end;gap:32px;
+}
+@media(max-width:960px){
+  .dl-inner{grid-template-columns:1fr;text-align:center;align-items:center;padding:50px 28px}
+  .dl-pirate-wrap,.dl-skull-wrap{display:none}
+}
+
+.dl-pirate-wrap{}
+.dl-pirate{
+  width:100%;border-radius:20px;
+  filter:drop-shadow(0 12px 30px rgba(0,0,0,.5));
+  animation:pirateFloat 4s ease-in-out infinite;
+}
+@keyframes pirateFloat{0%,100%{transform:translateY(0) rotate(-1.5deg)}50%{transform:translateY(-14px) rotate(1.5deg)}}
+
+.dl-content{text-align:center}
+.dl-title{
+  font-family:'Lilita One',cursive;
+  font-size:clamp(2.2rem,4.5vw,3.5rem);
+  color:#fff;text-shadow:3px 3px 0 rgba(0,0,0,.4);
+  margin-bottom:14px;
+}
+.dl-title .hl{color:#FFD600}
+.dl-desc{
+  color:rgba(255,255,255,.88);font-size:1rem;line-height:1.65;
+  max-width:400px;margin:0 auto 30px;
+  text-shadow:1px 1px 4px rgba(0,0,0,.4);
+}
+.dl-store-row{
+  display:flex;justify-content:center;gap:14px;flex-wrap:wrap;
+}
+.dl-store-badge{
+  background:#000;border-radius:12px;padding:2px;
+  border:2px solid rgba(255,255,255,.15);
+  transition:transform .2s,border-color .2s;
+}
+.dl-store-badge:hover{transform:translateY(-3px);border-color:#FFD600}
+.dl-store-badge img{height:48px;width:auto}
+
+.dl-skull-wrap{opacity:.2;display:flex;align-items:flex-end}
+.dl-skull{
+  width:100%;border-radius:20px;
+  filter:grayscale(1) brightness(2);
+  animation:skullSway 7s ease-in-out infinite;
+}
+@keyframes skullSway{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+
+/* ─────────────────────────────────────────
+   FOOTER
+───────────────────────────────────────── */
+.footer{
+  background:#0d1b3e;border-top:3px solid rgba(255,214,0,.15);
+  padding:28px 36px;
+}
+.footer-inner{
+  max-width:1200px;margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:20px;
+}
+.footer-brand{display:flex;align-items:center;gap:10px;font-family:'Lilita One',cursive;font-size:.9rem;color:rgba(255,255,255,.75)}
+.footer-brand img{width:34px;height:34px;border-radius:8px;object-fit:cover}
+.footer-nav{display:flex;gap:20px;flex-wrap:wrap}
+.footer-nav a{font-size:.82rem;font-weight:700;color:rgba(255,255,255,.45);transition:color .18s}
+.footer-nav a:hover{color:#FFD600}
+.footer-copy{font-size:.78rem;color:rgba(255,255,255,.3)}
+
+@media(max-width:640px){.footer-inner{flex-direction:column;text-align:center}.footer-nav{justify-content:center}}
+
+  </style>
+</head>
+<body>
+
+<!-- ══════════ NAVBAR ══════════ -->
+<header class="navbar" id="navbar">
+  <div class="navbar-inner">
+    <a href="#" class="nav-brand" id="nav-logo">
+      <img src="assets/logo.png" alt="Cannon Smash logo">
+      <div class="nav-brand-text">Cannon<em>Smash</em></div>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="#hero"        class="nav-link active" id="nl-home">Home</a>
+      <a href="#screenshots" class="nav-link" id="nl-shots">Screenshots</a>
+      <a href="#download"    class="nav-link" id="nl-download">Download</a>
+      <a href="privacy.html"  class="nav-link" id="nl-privacy">Privacy Policy</a>
+    </nav>
+    <a href="#download" class="nav-playnow" id="nav-cta">Play Now →</a>
+  </div>
+</header>
+
+<!-- ══════════ HERO ══════════ -->
+<section class="hero" id="hero">
+
+
+  <div class="hero-container">
+    <!-- LEFT -->
+    <div class="hero-copy">
+
+      <h1 class="hero-h1">
+        <span class="h1-line1">FIRE THE</span>
+        <span class="h1-line2">CANNON!</span>
+        <span class="h1-line3">SMASH EVERYTHING!</span>
+      </h1>
+      <p class="hero-desc">
+        Load your cannon, aim carefully, and blast colorful blocks to bring down the towers!
+        Physics-based destruction, explosive fun and challenging levels await.
+      </p>
+
+      <div class="store-row">
+        <a href="#" id="hero-gplay"><img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" class="store-badge"></a>
+      </div>
+
+
+    </div>
+
+    <!-- RIGHT -->
+
+  </div>
+
+  <!-- wave separator -->
+  <div class="hero-wave">
+    <svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,40 C240,80 480,0 720,40 C960,80 1200,0 1440,40 L1440,80 L0,80 Z" fill="#e8f6ff"/>
+    </svg>
+  </div>
+</section>
+
+<!-- ══════════ TICKER ══════════ -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track" id="tickerTrack">
+    <span class="ticker-item"><img src="assets/logo.png" alt="">BLAST THE BLOCKS</span>
+    <span class="ticker-item">🏴‍☠️ BEAT HARD LEVELS</span>
+    <span class="ticker-item">🎯 AIM AND FIRE</span>
+    <span class="ticker-item">💥 EXPLOSIVE FUN</span>
+    <span class="ticker-item">🧩 CHALLENGING LEVELS</span>
+    <span class="ticker-item">⚓ CONQUER THE SEAS</span>
+    <span class="ticker-item"><img src="assets/logo.png" alt="">BLAST THE BLOCKS</span>
+    <span class="ticker-item">🏴‍☠️ BEAT HARD LEVELS</span>
+    <span class="ticker-item">🎯 AIM AND FIRE</span>
+    <span class="ticker-item">💥 EXPLOSIVE FUN</span>
+    <span class="ticker-item">🧩 CHALLENGING LEVELS</span>
+    <span class="ticker-item">⚓ CONQUER THE SEAS</span>
+  </div>
+</div>
+
+<!-- ══════════ SCREENSHOTS ══════════ -->
+<section class="screenshots" id="screenshots">
+  <div class="container">
+    <div class="sec-label">GALLERY</div>
+    <h2 class="sec-title">See the <span class="hl">Action</span></h2>
+    <p class="sec-sub">Real gameplay, real explosions, real fun!</p>
+
+    <div class="ss-outer">
+      <button class="ss-arrow" id="ssPrev" aria-label="Previous">&#8249;</button>
+      <div class="ss-viewport" id="ssViewport">
+        <div class="ss-track" id="ssTrack">
+          <div class="ss-slide"><img src="assets/ss1.png" alt="Screenshot 1"></div>
+          <div class="ss-slide"><img src="assets/ss2.png" alt="Screenshot 2"></div>
+          <div class="ss-slide"><img src="assets/ss3.png" alt="Screenshot 3"></div>
+          <div class="ss-slide"><img src="assets/ss4.png" alt="Screenshot 4"></div>
+          <div class="ss-slide"><img src="assets/ss5.png" alt="Screenshot 5"></div>
+          <div class="ss-slide"><img src="assets/ss6.png" alt="Screenshot 6"></div>
+          <div class="ss-slide"><img src="assets/ss7.png" alt="Screenshot 7"></div>
+        </div>
+      </div>
+      <button class="ss-arrow" id="ssNext" aria-label="Next">&#8250;</button>
+    </div>
+
+    <div class="ss-dots" id="ssDots">
+      <button class="ss-dot active" data-i="0" aria-label="Slide 1"></button>
+      <button class="ss-dot" data-i="1" aria-label="Slide 2"></button>
+      <button class="ss-dot" data-i="2" aria-label="Slide 3"></button>
+      <button class="ss-dot" data-i="3" aria-label="Slide 4"></button>
+      <button class="ss-dot" data-i="4" aria-label="Slide 5"></button>
+      <button class="ss-dot" data-i="5" aria-label="Slide 6"></button>
+      <button class="ss-dot" data-i="6" aria-label="Slide 7"></button>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ DOWNLOAD ══════════ -->
+<section class="download" id="download">
+  <div class="dl-bg"></div>
+  <div class="dl-border-top"></div>
+  <div class="dl-border-bot"></div>
+
+  <div class="dl-inner">
+    <div class="dl-pirate-wrap">
+      <img src="assets/pirate_cta.jpg" alt="Pirate character" class="dl-pirate" id="dl-pirate">
+    </div>
+
+    <div class="dl-content">
+      <h2 class="dl-title">Download <span class="hl">Free</span> Today!</h2>
+      <p class="dl-desc">Get on board, aim the cannon and smash the towers in this explosive puzzle adventure!</p>
+      <div class="dl-store-row">
+        <a href="#" class="dl-store-badge" id="dl-gplay">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play">
+        </a>
+      </div>
+    </div>
+
+    <div class="dl-skull-wrap">
+      <img src="assets/logo.png" alt="" class="dl-skull" aria-hidden="true">
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ FOOTER ══════════ -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <img src="assets/logo.png" alt="Cannon Smash">
+      <span>Cannon Smash</span>
+    </div>
+    <nav class="footer-nav">
+      <a href="#hero" id="fn-home">Home</a>
+      <a href="#features" id="fn-feat">Features</a>
+      <a href="#screenshots" id="fn-shots">Screenshots</a>
+      <a href="#download" id="fn-dl">Download</a>
+      <a href="#" id="fn-priv">Privacy Policy</a>
+    </nav>
+    <p class="footer-copy">© 2026 Cannon Smash. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+/* ── Navbar scroll shadow ── */
+const nb = document.getElementById('navbar');
+window.addEventListener('scroll', () => nb.classList.toggle('scrolled', scrollY > 20), {passive:true});
+
+/* ── Screenshot Slider ── */
+(function(){
+  const track  = document.getElementById('ssTrack');
+  const slides = Array.from(track.querySelectorAll('.ss-slide'));
+  const dots   = Array.from(document.querySelectorAll('.ss-dot'));
+  const VISIBLE = 5; // show 5 at a time
+  let cur = 0;
+  const max = slides.length - VISIBLE;
+
+  function calcStep(){
+    return slides[0].offsetWidth + 16; // width + gap
+  }
+  function go(n){
+    cur = Math.max(0, Math.min(n, max));
+    track.style.transform = `translateX(-${cur * calcStep()}px)`;
+    dots.forEach((d,i)=> d.classList.toggle('active', i===cur));
+  }
+
+  document.getElementById('ssPrev').addEventListener('click', ()=> go(cur-1));
+  document.getElementById('ssNext').addEventListener('click', ()=> go(cur+1));
+  dots.forEach(d => d.addEventListener('click', ()=> go(+d.dataset.i)));
+
+  // auto advance
+  let t = setInterval(()=> go(cur >= max ? 0 : cur+1), 3000);
+  track.addEventListener('mouseenter', ()=> clearInterval(t));
+  track.addEventListener('mouseleave', ()=>{ t = setInterval(()=> go(cur >= max ? 0 : cur+1), 3000); });
+
+  window.addEventListener('resize', ()=> go(cur), {passive:true});
+})();
+</script>
+</body>
+</html>
